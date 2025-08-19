@@ -1,0 +1,48 @@
+// prisma/schema.prisma
+
+generator client {
+  // Prisma va a generar un cliente JS/TS tipado (node_modules/@prisma/client)
+  provider = "prisma-client-js"
+}
+
+// conexion del cliente prisma con la base de datos
+datasource db {
+  // digo que tipo de base de datos es
+  provider = "postgresql"
+
+  // variable definida .env para no exponerla en el codigo 
+  url = env("DATABASE_URL")
+}
+
+// Rol de cada mensaje 
+enum MessageRole {
+  user
+  assistant
+}
+
+// Modelos (tablas). Cada modelo mapea una tabla en la base de datos
+
+// agrupa mensajes de usario con estos atributos
+model Conversation {
+  // primary key generada por UUID de prisma 
+  id String @id @default(uuid())
+
+  // TimeStamp con default ahora
+  createdAt DateTime @default(now())
+
+  // TimeStamp que actualiza por prima automaticamente en cada update
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+}
+
+model Message {
+  id             String      @id @default(uuid())
+  conversationId String
+  role           MessageRole
+  content        String
+  createdAt      DateTime    @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+}
