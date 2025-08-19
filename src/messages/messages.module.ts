@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MessageService } from './message.service';
+import { MessageService } from './messages.service';
 import { GeminiModule } from '../gemini/gemini.module';
 import { PrismaService } from '../prisma/prisma.service';
 

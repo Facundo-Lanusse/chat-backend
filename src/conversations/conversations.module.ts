@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConversationService } from './conversation.service';
+import { ConversationService } from './conversations.service';
 
 @Module({
   providers: [ConversationService],
