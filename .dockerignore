@@ -1,9 +1,81 @@
+# === .dockerignore optimizado para seguridad ===
+
+# Dependencies
 node_modules
-.git
-.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn
+
+# Build outputs
 dist
-coverage
+build
+.next
+
+# Environment files (CRÍTICO para seguridad)
+.env*
+!.env.example
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE & Editor files
 .vscode
-Dockerfile
-npm-debug.log
+.idea
+*.swp
+*.swo
+*~
+
+# Testing
+coverage
+.nyc_output
+jest.config.js
+test/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+*.md
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+.tmp
+
+# Config files no necesarios en producción
+tsconfig.json
+eslint.config.mjs
+nest-cli.json
+.eslintrc.js
+.prettierrc
+
+# Cache directories
+.cache
+.parcel-cache
 

@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { MessageRole } from '@prisma/client';
-import { GeminiService } from 'src/gemini/gemini.service';
+import { GeminiService } from '../gemini/gemini.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()

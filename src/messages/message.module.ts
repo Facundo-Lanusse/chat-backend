@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MessageService } from './message.service';
-import { GeminiModule } from 'src/gemini/gemini.module';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { GeminiModule } from '../gemini/gemini.module';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Module({
   imports: [GeminiModule],

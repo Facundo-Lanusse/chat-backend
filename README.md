@@ -21,41 +21,183 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# Chat Backend with Gemini AI
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Un backend NestJS con integración a Google Gemini AI para un sistema de chat inteligente.
 
-## Project setup
+## Arquitectura
+
+- **NestJS**: Framework para Node.js con arquitectura modular
+- **Prisma**: ORM para PostgreSQL
+- **Google Gemini AI**: Integración para respuestas inteligentes
+- **Docker**: Containerización completa
+- **PostgreSQL**: Base de datos relacional
+
+## Servicios Principales
+
+- `ConversationService`: Manejo de conversaciones CRUD
+- `MessageService`: Procesamiento de mensajes y integración con Gemini
+- `GeminiService`: Conexión con API de Google Gemini
+- `PrismaService`: Conexión a base de datos
+
+## Setup del Proyecto
+
+### 1. Configuración Inicial
 
 ```bash
-$ npm install
+# Clonar e instalar dependencias
+git clone <repo-url>
+cd chat-backend
+npm install
 ```
 
-## Compile and run the project
+### 2. Variables de Entorno
+
+Copiar `.env.example` a `.env` y configurar:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Editar `.env`:
 
 ```bash
-# unit tests
+# --- App (Nest/Prisma) ---
+PORT=3001
+GEMINI_API_KEY=tu_api_key_aqui
+DATABASE_URL="postgresql://postgres:postgres@postgres:5432/chatdb?schema=public"
+
+# --- Docker/Postgres ---
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=chatdb
+PGHOST_PORT=5432
+```
+
+### 3. Desarrollo Local
+
+```bash
+# Ejecutar con Docker (recomendado)
+docker-compose up --build
+
+# O desarrollo local
+npm run start:dev
+```
+
+## Comandos Docker
+
+### Construcción y Ejecución
+
+```bash
+# Construir y ejecutar todo
+docker-compose up --build
+
+# Solo construir
+docker-compose build
+
+# Ejecutar en background
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f
+
+# Parar servicios
+docker-compose down
+```
+
+### Comandos de Desarrollo
+
+```bash
+# Reconstruir solo la app
+docker-compose build app
+
+# Resetear base de datos
+docker-compose down -v
+docker-compose up --build
+
+# Ejecutar migraciones
+docker-compose exec app npx prisma migrate dev
+
+# Ver estado de la base de datos
+docker-compose exec app npx prisma studio
+```
+
+## Comandos NPM Locales
+
+```bash
+# Desarrollo
+npm run start:dev
+
+# Construcción
+npm run build
+
+# Producción
+npm run start:prod
+
+# Prisma
+npx prisma generate
+npx prisma migrate dev
+npx prisma studio
+
+# Tests
+npm run test
+npm run test:e2e
+```
+
+## Estructura del Proyecto
+
+```
+src/
+├── app.module.ts          # Módulo principal
+├── main.ts               # Entry point
+├── conversation/         # Módulo de conversaciones
+│   ├── conversation.service.ts
+│   └── conversation.module.ts
+├── messages/            # Módulo de mensajes
+│   ├── message.service.ts
+│   └── message.module.ts
+├── gemini/              # Integración Gemini AI
+│   ├── gemini.service.ts
+│   └── gemini.module.ts
+└── prisma/              # Configuración Prisma
+    ├── prisma.service.ts
+    └── prisma.module.ts
+```
+
+## Troubleshooting
+
+### Problemas Comunes
+
+1. **Error de conexión a base de datos**: Verificar que `DATABASE_URL` use `postgres:5432` (no `localhost`)
+2. **Puerto ocupado**: Cambiar `PGHOST_PORT` en `.env`
+3. **Error de Gemini API**: Verificar `GEMINI_API_KEY` en `.env`
+
+### Logs útiles
+
+```bash
+# Ver logs de la aplicación
+docker-compose logs app
+
+# Ver logs de la base de datos
+docker-compose logs postgres
+
+# Entrar al contenedor
+docker-compose exec app sh
+```
+
+## Descripción Original NestJS
+
 $ npm run test
 
 # e2e tests
+
 $ npm run test:e2e
 
 # test coverage
+
 $ npm run test:cov
-```
+
+````
 
 ## Deployment
 
@@ -66,7 +208,7 @@ If you are looking for a cloud-based platform to deploy your NestJS application,
 ```bash
 $ npm install -g @nestjs/mau
 $ mau deploy
-```
+````
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 

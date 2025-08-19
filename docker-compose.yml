@@ -1,29 +1,27 @@
 services:
   postgres:
     image: postgres:16
-    container_name: chat-postgres
-    restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-chatdb}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: chatdb
     ports:
-      - '${PGHOST_PORT:-5432}:5432'
+      - '5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test:
-        [
-          'CMD-SHELL',
-          'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-chatdb}',
-        ]
-      interval: 5s
-      timeout: 3s
-      retries: 20
+
+  app:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/chatdb
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    ports:
+      - '3001:3001'
+    volumes:
+      - .:/app
+      - /app/node_modules
 
 volumes:
   pgdata:
-
-networks:
-  default:
-    name: chat-net
