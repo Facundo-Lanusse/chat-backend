@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { MessageRole } from '@prisma/client';
-import { GeminiService } from '../gemini/gemini.service';
+import { GeminiService, GeminiMessage } from '../gemini/gemini.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -42,6 +42,22 @@ export class MessageService {
     }
 
     try {
+      // Obtener mensajes previos de la conversación para dar contexto
+      const previousMessages = await this.prisma.message.findMany({
+        where: { conversationId },
+        orderBy: { createdAt: 'asc' },
+        select: {
+          role: true,
+          content: true,
+        },
+      });
+
+      // Convertir mensajes de Prisma al formato que espera Gemini
+      const chatHistory: GeminiMessage[] = previousMessages.map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      }));
+
       // agrego el mensaje del usuario
       const userMessage = await this.prisma.message.create({
         data: {
@@ -52,8 +68,11 @@ export class MessageService {
         },
       });
 
-      // genero la respuesta de la IA
-      const geminiAiResponse = await this.gemini.generateResponse(content);
+      // genero la respuesta de la IA con contexto de conversación
+      const geminiAiResponse = await this.gemini.generateResponseWithContext(
+        chatHistory,
+        content.trim(),
+      );
 
       // guardo la respuesta de la IA
       const geminiAiMessage = await this.prisma.message.create({
